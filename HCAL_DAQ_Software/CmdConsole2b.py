@@ -950,7 +950,7 @@ def cfgHBU(linkNum = 1, fixInputDAC = 0, HBUNum = HBUOrderList ,outputMod = 'HL'
     thrListSelected = []
     if(thrListFlag == 1):
         thrListSelected = thrList
-     
+
 
     num = HBUNum[0]
     print(num)
