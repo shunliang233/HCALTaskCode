@@ -4,7 +4,22 @@ import time
 from configList import regConfigList,regList,chipIDList,thrList
 
 class fileHandle:
-    def __init__(self,path,cfgFileName,dacVoltageList,chipIDList,thrList_3,fixInputDAC): #手动命名配置文件，mod:HT(TDC&Hg),HL(Hg&Lg)
+    """
+    后缀为 txt 的配置文件生成器
+    Attributes:
+        path (str): 配置文件存储目录
+        log (str): 日志文件路径
+        bytenum (int): 标记当前行写入的字节数
+        dacVoltageList (list):
+        chipIDList (list): 包含 9 个 chip ID 的列表
+        thrList (list): 包含所有阈值的列表
+        cfgFileName (str): 配置文件相对路径
+        fWrite (): txt 版本的配置文件对象
+
+    Methods:
+        CommandSend(): 将 2 Bytes 数据写入配置文件
+    """
+    def __init__(self, path,cfgFileName,dacVoltageList,chipIDList,thrList_3,fixInputDAC): #手动命名配置文件，mod:HT(TDC&Hg),HL(Hg&Lg)
         self.path = path
         self.log = open(path+'/dacGeneratorLog.txt','a')
         self.bytenum = 0
@@ -17,7 +32,7 @@ class fileHandle:
     def logClose(self):
         self.log.close()
 
-    def logClear(self):       
+    def logClear(self):
         #self.fRead = open(self.path+'dacAdjustNo.'+str(self.num)+'.txt','r')
         self.log.seek(0)
         self.log.truncate()
@@ -44,19 +59,18 @@ class fileHandle:
         self.bytenum = 0
         self.log.write('\n#### file clear #### \n')
 
-    #def dacRead(self,fixInputDAC,num): #得到210个DAC输出的二进制编码
     def dacRead(self,fixInputDAC,num): #得到210个DAC输出的二进制编码
         if(fixInputDAC == 0):
             self.fRead = open(self.path+'dacAdjustFiles/dacAdjustNo.'+str(num)+'.txt','r') #读取已有的dac差异性补偿文件
         else:
             self.fRead = open(self.path+'dacAdjustYZ/Vop0.5_dacAdjustNo.'+str(num)+'.txt','r') #读取已有的dac差异性补偿文件
-        line = self.fRead.readline() #这里的fRead是在构造函数中被定义的
+        line = self.fRead.readline()
         while line: #当line非空继续读取
             if(fixInputDAC == 0):
                 if (int((float(line[-9:-5])-4.5)/4*255) == 0):
                     self.dacVoltageList.append('000000001')
                 else:
-                    self.dacVoltageList.append(str(bin(int((4.5 - float(line[-9:-5]))/4*255)))[2:].zfill(8) + '1')
+                    self.dacVoltageList.append(str(bin(int((4.5 - float(line[-9:-5]))/4*255)))[2:].zfill(8) + '1') # '111111111'
             #print(str(bin(255 - int((float(line[-9:-5])-0.5)/4*255)))[2:] + '1')
             else:
                 locOfTab = line.find('\t')

@@ -946,6 +946,24 @@ def elecSigTrigSel(elinkNum = 1,sysTrigerEn = 0):
         wordSend(elinkNum,0x2101)
 
 def cfgHBU(linkNum = 1, fixInputDAC = 0, HBUNum = HBUOrderList ,outputMod = 'HL',tdcRamp = 1, forceEn = 0,selectThr = 200,trigDelay = 54,thrListFlag = 1,voltageOffet = 0.5): #tdcramp = 0 slowRamp
+    """
+    生成编号为 HBUNum[0] 的灵敏层的配置文件
+    Args:
+        linkNum (int): 配置文件的编号, 从 0 开始
+        fixInptDAC (int): 目前是 0
+        HBUNum (list): HBUNum[0] 是需要生成配置文件的灵敏层编号, 从 1 开始
+        outputMod (string): 配置文件输出模式, 分为: 'HL', 'HT', 'AT'
+        tdcRamp (int): 目前是 1
+        forceEn (int): 模式开关, 分为 0 和 1 两种模式
+        selectThr (int): 
+        trigDelay (int):
+        thrListFlag (int): 是否提取 threshold 列表, 1表示提取, 其他表示不提取
+        voltageOffet (float): 作用与所有层的高压偏置值
+    
+    Returns:
+        int: 
+    """
+
     print("start")
     thrListSelected = []
     if(thrListFlag == 1):
@@ -1024,16 +1042,18 @@ def cfgHBU(linkNum = 1, fixInputDAC = 0, HBUNum = HBUOrderList ,outputMod = 'HL'
         gen.CommandSend(0x0C04)
     #高压配置命令 前两层暂时为备用板
     if(num>0):
-        if(forceEn == 1 & trigDelay == 54):
+        if(forceEn == 1 and trigDelay == 54):
             voltage = 30
+            print(f"voltage = {voltage}")
         else:
             voltage = HVList[num-1] + voltageOffet
+            print(f"voltage = {voltage}")
         DIFLoc = DIFOrderList[num - 1]
         dacPara = HVParaList[DIFLoc - 1]
         print(dacPara)
         volReg32bit = int((voltage-0.1)*dacPara[0] + dacPara[1]) #根据不同dif的参数生成对应的dac道值 控制高压输出 
-        hvWordH = 0x3080 + (volReg32bit>>8)
-        hvWordL = 0x3000 + (volReg32bit&0x00FF)
+        hvWordH = 0x3080 + (volReg32bit>>8)  # 取高 8 位
+        hvWordL = 0x3000 + (volReg32bit&0x00FF)  # 取低 8 位
         gen.CommandSend(hvWordH)
         gen.CommandSend(hvWordL)
     #else:
@@ -1055,10 +1075,10 @@ def cfgHBU(linkNum = 1, fixInputDAC = 0, HBUNum = HBUOrderList ,outputMod = 'HL'
         cfgDat = cfgDatHandle.read()
         cfgByte = filter(None,cfgDat.split(' '))
         gen.CommandSend(0x0601)
-        gen.CommandSend(0x0501) 
+        gen.CommandSend(0x0501)
 
         for byte in cfgByte:
-            gen.CommandSend(0x0300+int(byte,16))    
+            gen.CommandSend(0x0300+int(byte,16))
 
         gen.CommandSend(0x0500)
         gen.CommandSend(0x0800)

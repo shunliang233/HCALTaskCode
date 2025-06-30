@@ -4,6 +4,17 @@
 # 生成器类定义
 
 class generator:
+    """
+    配置文件的生成器
+    Attributes:
+        path (string): 配置文件路径
+        fHandle (): 配置文件对象
+        log (): 日志文件对象
+        bytenum (int): 标记当前行写入的字节数
+
+    Methods:
+        CommandSend(): 将 2 Bytes 数据写入配置文件
+    """
 
     def __init__(self,path='./CMDLib/default.dat'):
         self.path = path
@@ -14,7 +25,7 @@ class generator:
     def logclose(self):
         self.log.close()
 
-    def fOpen(self):       
+    def fOpen(self):
         self.fHandle = open(self.path,'w+')
         self.log.write('\n#### file open #### \n')
 
@@ -31,8 +42,8 @@ class generator:
 
 
     def CommandSend(self,cmdWord):
-        highByte = cmdWord >> 8
-        lowByte = cmdWord & 0xff
+        highByte = cmdWord >> 8  # 取高 8 位
+        lowByte = cmdWord & 0xff  # 取低 8 位
         if(self.bytenum>20):
             self.fHandle.write('\n')
             self.log.write('\n')
