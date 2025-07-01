@@ -96,7 +96,7 @@ thrList = []
 
 #USTC threshold
 #chip1 chip2 chip3 chip4 chip5 chip6
-singleEBUChipThrList = [230,230,230,230,230,230,230,230,230]  #HBU1
+singleEBUChipThrList = [270,270,270,270,270,270,270,270,270]  #HBU1
 #singleEBUChipThrList = [250,250,250,250,250,250,250,250,250]
 thrList.extend(singleEBUChipThrList)
 singleEBUChipThrList = [250,250,230,240,250,250,250,250,230] #HBU2
@@ -286,17 +286,19 @@ regConfigList.append('0')
 regConfigList.append('1')
 regConfigList.append('0')
 regConfigList.append('3FF') # DAC1_Trigger, 10 bit
-regConfigList.append('0111110100') # DAC2_Gain_Sel (gain trigger)
+regConfigList.append('0111110100') # DAC2_Gain_Sel == 500 (gain trigger)
 #regConfigList.append('0011001000') # gain trigger
 regConfigList.append('1') # TDC_Ramp_Slope
 regConfigList.append('1')
 regConfigList.append('0')
+# 232 bit
 regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('0') # Auto_Gain
 regConfigList.append('0') # Gain_Select
 regConfigList.append('0')
 regConfigList.append('0') # Switch_TDC_On
+# 226 bit
 temp = '0'
 for i in range(35):  #i start from 1
     temp = temp + '0'
@@ -304,6 +306,7 @@ regConfigList.append(temp)
 regConfigList.append('1')
 regConfigList.append('0')
 regConfigList.append('00110110') # Trigger_delay == 54
+# 180 bit
 temp = '0'
 for i in range(143):  #i start from 1
     temp = temp + '0'
