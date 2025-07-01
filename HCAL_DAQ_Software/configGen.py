@@ -105,6 +105,8 @@ class fileHandle:
             regConfigList[index] = '1'
             index = regList.index('Gain_Select')
             regConfigList[index] = '0'
+            index = regList.index('DAC2_Gain_Sel')
+            regConfigList[index] = str(bin(selectThr)[2::].zfill(10)) # 目前是 test.py 中设的 500, 转为二进制并前面补 0 直到 10 位
         elif self.outputMod == 'HT':
             index = regList.index('Switch_TDC_On')
             regConfigList[index] = '0'
@@ -112,6 +114,8 @@ class fileHandle:
             regConfigList[index] = '1'
             index = regList.index('Gain_Select')
             regConfigList[index] = '1'
+            index = regList.index('DAC2_Gain_Sel')
+            regConfigList[index] = str(bin(selectThr)[2::].zfill(10)) # 目前是 test.py 中设的 500, 转为二进制并前面补 0 直到 10 位
         elif self.outputMod == 'AT':
             index = regList.index('Switch_TDC_On')
             regConfigList[index] = '0'
