@@ -235,7 +235,7 @@ thrList.extend(singleEBUChipThrList)
 
 
 
-
+# regConfigList 的总 bit 数: 1186
 regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('0')
@@ -243,7 +243,7 @@ regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('000000000001')
-regConfigList.append('chipID') #chip id
+regConfigList.append('chipID') # Chip_ID, 8 bit
 regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('1')
@@ -254,7 +254,7 @@ regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('1')
 regConfigList.append('1')
-regConfigList.append('inputDAC') #36x9 bit
+regConfigList.append('inputDAC')  # Input_DAC, 36x9 bit
 regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('1')
@@ -264,7 +264,7 @@ regConfigList.append('0')
 temp = ''
 for i in range(36):  #i start from 1
     temp = temp + '101101001101000'
-regConfigList.append(temp) # 36x15 bit
+regConfigList.append(temp) # Channel_0_to_35_PA, 36x15 bit
 regConfigList.append('0')
 regConfigList.append('1')
 regConfigList.append('101') # low gain shaper
@@ -285,25 +285,25 @@ regConfigList.append('1')
 regConfigList.append('0')
 regConfigList.append('1')
 regConfigList.append('0')
-regConfigList.append('3FF') # DAC1 trigger
-regConfigList.append('0111110100') # gain trigger
+regConfigList.append('3FF') # DAC1_Trigger, 10 bit
+regConfigList.append('0111110100') # DAC2_Gain_Sel (gain trigger)
 #regConfigList.append('0011001000') # gain trigger
+regConfigList.append('1') # TDC_Ramp_Slope
 regConfigList.append('1')
-regConfigList.append('1')
 regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('0')
-regConfigList.append('0') # auto gain
-regConfigList.append('0') # gain select
+regConfigList.append('0') # Auto_Gain
+regConfigList.append('0') # Gain_Select
 regConfigList.append('0')
-regConfigList.append('0') #switch TDC on
+regConfigList.append('0') # Switch_TDC_On
 temp = '0'
 for i in range(35):  #i start from 1
     temp = temp + '0'
 regConfigList.append(temp)
 regConfigList.append('1')
 regConfigList.append('0')
-regConfigList.append('00110110') #trigger delay
+regConfigList.append('00110110') # Trigger_delay
 temp = '0'
 for i in range(143):  #i start from 1
     temp = temp + '0'

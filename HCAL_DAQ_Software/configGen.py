@@ -10,7 +10,7 @@ class fileHandle:
         path (str): 配置文件存储目录
         log (str): 日志文件路径
         bytenum (int): 标记当前行写入的字节数
-        dacVoltageList (list):
+        dacVoltageList (list): 324 个 DAC 输出的二进制编码构成的列表
         chipIDList (list): 包含 9 个 chip ID 的列表
         thrList (list): 包含所有阈值的列表
         cfgFileName (str): 配置文件相对路径
@@ -59,7 +59,15 @@ class fileHandle:
         self.bytenum = 0
         self.log.write('\n#### file clear #### \n')
 
-    def dacRead(self,fixInputDAC,num): #得到210个DAC输出的二进制编码
+    def dacRead(self,fixInputDAC,num):
+        """
+        得到 324 个 DAC 输出的二进制编码 (不知道为啥原先说是 210 个), 存入 self.dacVoltageList 列表中
+        Args:
+            fixInputDAC (int): 目前是 0
+            num (int): 需要生成配置文件的灵敏层编号
+        Returns:
+            None: 无返回值
+        """
         if(fixInputDAC == 0):
             self.fRead = open(self.path+'dacAdjustFiles/dacAdjustNo.'+str(num)+'.txt','r') #读取已有的dac差异性补偿文件
         else:
@@ -80,7 +88,15 @@ class fileHandle:
             #self.dacVoltageList.append('000000000')
         self.fRead.close()
 
-    def outputModSelect(self,outputMod,selectThr): #根据选择的mod决定输出 hg lg 或者 hg TDC
+    def outputModSelect(self,outputMod,selectThr):
+        """
+        根据选择的 mod 决定输出 hg lg 或者 hg TDC, 直接对 configList.py 中的 regConfigList 进行修改
+        Args:
+            outputMod (int): 选择的模式，分为 HL, HT, AT.
+            selectThr (int): 在 AT 模式下修改 DAC2_Gain_Sel 项为此值
+        Returns:
+            None: 无返回值
+        """
         self.outputMod = outputMod
         if self.outputMod == 'HL': #0 有效
             index = regList.index('Switch_TDC_On')
@@ -104,7 +120,7 @@ class fileHandle:
             index = regList.index('Gain_Select')
             regConfigList[index] = '0'
             index = regList.index('DAC2_Gain_Sel')
-            regConfigList[index] = str(bin(selectThr)[2::].zfill(10))
+            regConfigList[index] = str(bin(selectThr)[2::].zfill(10)) # 目前是 test.py 中设的 500, 转为二进制并前面补 0 直到 10 位
         else:
             self.log.write('\n#### outputMod should be HL,HT or AT #### \n')
             print('outputMod select error')
@@ -116,24 +132,46 @@ class fileHandle:
     #     regConfigList[index] = str(bin(self.thr)[2::].zfill(10)) #375 -> 0b0101110111
 
     def tdcRampSet(self,tdcRamp):
+        """
+        修改 regConfigList 中的 TDC_Ramp_Slope 项
+        Args:
+            tdcRamp (int): 目前是 1
+        Returns:
+            None: 无返回值
+        """
         self.tdcRamp = tdcRamp
         index = regList.index('TDC_Ramp_Slope')
         regConfigList[index] = str(self.tdcRamp)
 
     def trigDelaySet(self,trigDelay):
+        """
+        修改 regConfigList 中的 Trigger_delay 项
+        Args:
+            trigDelay (int): 目前是 150
+        Returns:
+            None: 无返回值
+        """
         self.trigDelay = trigDelay
         index = regList.index('Trigger_delay')
         regConfigList[index] = str(bin(int(trigDelay)))[2:].zfill(8)
-        #print(regConfigList[index])    
+        #print(regConfigList[index])
 
-    def cfgFileWrite(self,EBUNum,forceEn): #写入配置文件
+    def cfgFileWrite(self,EBUNum,forceEn):
+        """
+        写入配置文件
+        Args:
+            EBUNum (int): 需要生成配置文件的灵敏层编号, 从 1 开始
+            forceEn (int): 模式开关, 分为 0 和 1 两种模式
+        Returns:
+            None: 无返回值
+        """
         #self.cfgFileName = cfgFileName
         #self.fWrite = open(self.path + cfgFileName + '.txt','a')
         dacAllChips = ''.join(self.dacVoltageList) #顺序连接所有的inputdac码值
 
         dacSingleChip = [] #得到单芯片的inputdac list
         for i in range(9):
-            dacSingleChip.append(dacAllChips[i * 324 : i * 324 + 324])
+            dacSingleChip.append(dacAllChips[i * 324 : i * 324 + 324])  # 一次提取 36 个 channel 的 dacVoltage, 每个 9 bit
         
         regConfigAll = [] 
         for i in range(9): #生成9个芯片的寄存器值列表
@@ -143,11 +181,10 @@ class fileHandle:
             regConfigList[index] = dacSingleChip[i]
             index = regList.index('DAC1_Trigger')
             if(forceEn==0):
-                
                 print(bin(thrList[(EBUNum - 1)*9 + i]).zfill(10))
                 regConfigList[index] = str(bin(thrList[(EBUNum-1)*9 + i])[2::].zfill(10)) #375 -> 0b0101110111
             else:
-                regConfigList[index] = str(bin(1023)[2::].zfill(10)) #375 -> 0b0101110111
+                regConfigList[index] = str(bin(1023)[2::].zfill(10)) # 现在是 1111111111, 原先可能是 375 -> 0b0101110111
             # for member in regConfigList:
             #     print(len(member))
             #print(regConfigList)
@@ -156,16 +193,16 @@ class fileHandle:
         #for member in regConfigAll:
             #print(len(member)) 
         
-        
+        # regConfigAll 的总 bit 数: 10674
         regConfigAll = ''.join(regConfigAll)
-        regConfigAll = regConfigAll[::-1] #逆序
-        #print(regConfigAll)
+        regConfigAll = regConfigAll[::-1] # 逆序，应该和传输时的网络序和主机序有关
+        # print(len(regConfigAll))
         #regConfigAll = regConfigAll + '0000'
         i = 0
         while i < len(regConfigAll):
             #print(hex(int(regConfigAll[i : i + 8],2)))
             tmpHexData = hex(int(regConfigAll[i : i + 8],2))
-            if len(tmpHexData) < 4:
+            if len(tmpHexData) < 4:  # regConfigAll 最后只剩 2 bit, 因此 tmpHexData == '0x?' 有 3 个字符
                 tmpHexData = list(tmpHexData)
                 tmpHexData.insert(2,'0')
                 tmpHexData = ''.join(tmpHexData)

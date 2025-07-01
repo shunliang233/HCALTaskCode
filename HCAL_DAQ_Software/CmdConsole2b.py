@@ -961,7 +961,7 @@ def cfgHBU(linkNum = 1, fixInputDAC = 0, HBUNum = HBUOrderList ,outputMod = 'HL'
         voltageOffet (float): 作用与所有层的高压偏置值
     
     Returns:
-        int: 
+        None: 无返回值
     """
 
     print("start")
