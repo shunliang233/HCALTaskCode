@@ -254,7 +254,7 @@ regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('1')
 regConfigList.append('1')
-regConfigList.append('inputDAC')  # Input_DAC, 36x9 bit
+regConfigList.append('inputDAC')  # Input_DAC, 36x9 bit, 目前值全是 1
 regConfigList.append('0')
 regConfigList.append('0')
 regConfigList.append('1')
@@ -286,7 +286,7 @@ regConfigList.append('0')
 regConfigList.append('1')
 regConfigList.append('0')
 regConfigList.append('3FF') # DAC1_Trigger, 10 bit
-regConfigList.append('0111110100') # DAC2_Gain_Sel == 500 (gain trigger)
+regConfigList.append('0111110100') # DAC2_Gain_Sel == 500 == 0111110100 (gain trigger)
 #regConfigList.append('0011001000') # gain trigger
 regConfigList.append('1') # TDC_Ramp_Slope
 regConfigList.append('1')
