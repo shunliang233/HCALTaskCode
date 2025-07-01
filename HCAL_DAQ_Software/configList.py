@@ -303,7 +303,7 @@ for i in range(35):  #i start from 1
 regConfigList.append(temp)
 regConfigList.append('1')
 regConfigList.append('0')
-regConfigList.append('00110110') # Trigger_delay
+regConfigList.append('00110110') # Trigger_delay == 54
 temp = '0'
 for i in range(143):  #i start from 1
     temp = temp + '0'
