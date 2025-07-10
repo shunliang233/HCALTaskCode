@@ -9,7 +9,7 @@ from Driver.setting_ustc_2b import FEC_name_list3,FEC_name_list2,FEC_name_list1,
 from time import sleep, localtime
 import time
 from cmdTools.cmdGen import generator, probeMod
-from configList import regConfigList,regList,chipIDList,HVList,HBUOrderList,thrList, DIFOrderList, HVParaList
+from configList import regConfigList,regList,chipIDList,HVList,HBUOrderList,thrList, DIFOrderList, HVParaList,offset
 from configGen import fileHandle
 
 def felixShellDo(felixCmd,silence=1):
@@ -979,7 +979,7 @@ def cfgHBU(linkNum = 1, fixInputDAC = 0, HBUNum = HBUOrderList ,outputMod = 'HL'
         thrOfChips = thrOfChips + str(thrListSelected[(num-1)*9+j])
     print(thrOfChips)
     if(forceEn == 0):
-        subPath = outputMod + '_thrOpt_wjx4_' + 'HVOptValidModSelectThr200/'
+        subPath = outputMod + '_thrOpt3_thOffset_' + str(offset) + '_HVOptValidModSelectThr1023/'
     else:
         subPath = outputMod + 'latest_ForceMod_delay150/'
     if not os.path.exists(cfgPath + subPath):
@@ -992,7 +992,7 @@ def cfgHBU(linkNum = 1, fixInputDAC = 0, HBUNum = HBUOrderList ,outputMod = 'HL'
             cfgFileName = outputMod + '_link' + str(linkNum) + '_HBU' + str(num) + '_thr1023_allChips' + '_tdcRp' + str(tdcRamp) + '_fixInputDAC'
     else:
         if(forceEn == 0):
-            cfgFileName = outputMod + '_link' + str(linkNum) + '_HBU' + str(num) +'_thr'+ thrOfChips + '_tdcRp' + str(tdcRamp) 
+            cfgFileName = outputMod + '_link' + str(linkNum) + '_HBU' + str(num) +'_thr'+ thrOfChips + '_tdcRp' + str(tdcRamp)
         else:
             cfgFileName = outputMod + '_link' + str(linkNum) + '_HBU' + str(num) + '_thr1023_allChips' + '_tdcRp' + str(tdcRamp)
 

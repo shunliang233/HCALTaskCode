@@ -230,7 +230,8 @@ singleEBUChipThrList = [250,250,250,250,250,250,250,250,250] #HBU44 (no original
 thrList.extend(singleEBUChipThrList)
 
 # OffSet of Threshold
-# thrList = [x-5 for x in thrList]
+offset = -100
+thrList = [x+offset for x in thrList]
 
 
 
