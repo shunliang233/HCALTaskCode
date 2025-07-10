@@ -1085,8 +1085,8 @@ def cfgHBU(linkNum = 1, fixInputDAC = 0, HBUNum = HBUOrderList ,outputMod = 'HL'
         gen.CommandSend(0xEEEE)
         gen.fClose()
         print("end")
-# if os.path.exists(cfgPath + cfgFileName+'.txt'): #删除不必要的txt文件
-#     os.remove(cfgPath + cfgFileName+'.txt')
+        if os.path.exists(cfgPath + subPath + cfgFileName + '.txt'): #删除不必要的txt文件
+            os.remove(cfgPath + subPath + cfgFileName + '.txt')
 
 def cfgHBUwithTrigDelay(fixInputDAC = 0, trigDelay = 54, HBUNum = [27],elinkNum = 1,outputMod = 'HL',tdcRamp = 1, forceEn = 0,selectThr = 500,thrListFlag = 1): #tdcramp = 0 slowRamp
     thrListSelected = []
